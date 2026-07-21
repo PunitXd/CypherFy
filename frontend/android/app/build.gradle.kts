@@ -36,8 +36,14 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.secretchat"
+        // The app's permanent public identity — reverse-DNS of cypherfy.in.
+        // Must match the `package_name` of the Android app registered in
+        // Firebase (see app/google-services.json), or the Google Services
+        // Gradle plugin fails the build. Changing this after release forces
+        // users to uninstall/reinstall, so it is effectively immutable now.
+        // `namespace` above stays on the old value: it only scopes generated
+        // R/BuildConfig classes and is not user-visible.
+        applicationId = "in.cypherfy.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
