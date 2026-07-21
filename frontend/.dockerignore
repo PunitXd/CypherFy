@@ -26,3 +26,6 @@ test/
 
 Dockerfile
 .dockerignore
+
+# macOS AppleDouble resource-fork files (created on external volumes)
+._*

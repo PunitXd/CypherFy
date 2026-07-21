@@ -17,3 +17,6 @@ test-*.mjs
 Dockerfile
 .dockerignore
 README.md
+
+# macOS AppleDouble resource-fork files (created on external volumes)
+._*

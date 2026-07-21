@@ -19,3 +19,6 @@ Dockerfile
 .prettierrc
 .prettierignore
 readme.md
+
+# macOS AppleDouble resource-fork files (created on external volumes)
+._*

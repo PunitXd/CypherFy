@@ -9,6 +9,11 @@ export const SOCKET_URL =
 export const GOOGLE_WEB_CLIENT_ID =
   import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID || '';
 
+// Public download URL for the Android APK (hosted on R2). When set, a
+// "Download for Android" link appears on the auth screens. Left empty until the
+// signed APK is uploaded, so nothing is shown before it exists.
+export const APK_URL = import.meta.env.VITE_APK_URL || '';
+
 // Firebase web config (Google sign-in + optional web push).
 export const FIREBASE = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
