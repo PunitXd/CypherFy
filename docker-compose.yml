@@ -1,0 +1,83 @@
+# CypherFy — local/self-hosted stack.
+#
+#   redis     — Socket.io adapter + presence/TTL store (containerised).
+#   backend   — Express + Socket.io API on :8000.
+#   frontend  — React (Vite) web app served by nginx on :8080.
+#
+# MongoDB is expected to be remote (MongoDB Atlas) via MONGODB_URI in
+# backend/.env. To run Mongo locally too, uncomment the `mongo` service below
+# and point MONGODB_URI at mongodb://mongo:27017/cypherfy.
+#
+# Prereq: cp backend/.env.example backend/.env  and fill in your secrets.
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      # Inside the compose network Redis is reachable by service name.
+      REDIS_URL: redis://redis:6379
+      # CORS allow-origin — must match where the frontend is served from.
+      CLIENT_URL: http://localhost:8080
+    ports:
+      - '8000:8000'
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # React web app (frontend-web). The legacy Flutter web build in ./frontend is
+  # kept for the mobile codebase but no longer served here.
+  frontend:
+    build:
+      context: ./frontend-web
+      args:
+        # Baked into the JS bundle at build time. The browser runs on the host,
+        # so it reaches the backend via the published :8000 port; the backend's
+        # CLIENT_URL (:8080) matches this origin, so CORS works directly.
+        VITE_API_BASE_URL: http://localhost:8000/api/v1
+        VITE_SOCKET_URL: http://localhost:8000
+        VITE_GOOGLE_WEB_CLIENT_ID: ${GOOGLE_WEB_CLIENT_ID:-}
+        VITE_FIREBASE_API_KEY: ${FIREBASE_API_KEY:-}
+        VITE_FIREBASE_AUTH_DOMAIN: ${FIREBASE_AUTH_DOMAIN:-}
+        VITE_FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-}
+        VITE_FIREBASE_APP_ID: ${FIREBASE_APP_ID:-}
+        VITE_FIREBASE_VAPID_KEY: ${FIREBASE_VAPID_KEY:-}
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
+
+  # ---- Optional: run MongoDB locally instead of Atlas ----
+  # Uncomment this service AND set MONGODB_URI=mongodb://mongo:27017/cypherfy
+  # in backend/.env (or override it under backend.environment above).
+  #
+  # mongo:
+  #   image: mongo:7
+  #   restart: unless-stopped
+  #   volumes:
+  #     - mongo-data:/data/db
+  #   healthcheck:
+  #     test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping')"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+volumes:
+  redis-data:
+  # mongo-data:

@@ -1,0 +1,68 @@
+name: cypherfy
+description: CypherFy — end-to-end encrypted chat (ephemeral rooms + permanent DMs).
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Networking
+  socket_io_client: ^2.0.3
+  dio: ^5.4.0
+
+  # Routing
+  go_router: ^14.0.2
+
+  # State management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Encryption (cross-platform WebCrypto: web + mobile + desktop)
+  webcrypto: ^0.5.5
+
+  # Voice & Video
+  flutter_webrtc: ^1.5.2
+
+  # Notifications
+  firebase_core: ^3.1.0
+  firebase_messaging: ^15.0.0
+  # Native full-screen incoming-call UI (lockscreen ring on killed/backgrounded app).
+  flutter_callkit_incoming: ^2.0.4+2
+
+  # Media
+  image_picker: ^1.1.2
+  file_picker: ^8.0.0
+  cached_network_image: ^3.3.1
+
+  # Auth & Storage
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.1
+
+  # QR
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^5.1.0
+
+  # UI
+  google_fonts: ^6.2.1
+
+  # Utils
+  intl: ^0.19.0
+  uuid: ^4.4.0
+  package_info_plus: ^8.0.0
+  google_sign_in: ^7.2.0
+  firebase_auth: ^5.7.0
+  permission_handler: ^12.0.3
+  flutter_ringtone_player: ^4.0.0+4
+  wakelock_plus: ^1.3.3
+
+dev_dependencies:
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

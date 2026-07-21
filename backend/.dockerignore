@@ -1,0 +1,21 @@
+node_modules
+npm-debug.log*
+*.log
+
+# Secrets are injected at runtime (env_file / -e), never baked into the image.
+.env
+*.env
+!.env.example
+
+# Multer scratch space — recreated in the image.
+public/temp/*
+!public/temp/.gitkeep
+
+.git
+.gitignore
+.DS_Store
+Dockerfile
+.dockerignore
+.prettierrc
+.prettierignore
+readme.md

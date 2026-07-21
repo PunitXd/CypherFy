@@ -1,0 +1,278 @@
+/* "Cipher" theme — dark-neutral + green, ported from ~/desktop/ChatAppUI.
+   Scoped so it never touches the lamp/glass auth screens (which use index.css /
+   auth.css with their own literal colors). The post-login app roots get `.cipher`. */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #0f0f0f;
+  --panel: #161616;
+  --surface: #1e1e1e;
+  --raised: #272727;
+  --hover: #2e2e2e;
+  --border: rgba(255, 255, 255, 0.07);
+  --divider: rgba(255, 255, 255, 0.04);
+  --t1: #f0f0f0;
+  --t2: #888888;
+  --t3: #4a4a4a;
+  --green: #00d97e;
+  --green-dim: rgba(0, 217, 126, 0.12);
+  --danger: #f87171;
+  --coral: #ff6b4a;
+  /* Interactive accent (buttons, badges, active states, links). Green is kept
+     only for status (online dots, read ticks, "encrypted"). */
+  --accent: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-dim: rgba(99, 102, 241, 0.14);
+  --accent-glow: rgba(99, 102, 241, 0.35);
+  --on-accent: #ffffff;
+  --chat-bg: #000000; /* pure-black chat area (dark theme) */
+}
+
+/* Light Cipher variant — applied via document.documentElement[data-theme]. The
+   lamp/glass auth screens use their own literal colours, so they stay dark. */
+:root[data-theme='light'] {
+  --bg: #f7f7f8;
+  --panel: #ffffff;
+  --surface: #f0f0f2;
+  --raised: #e6e6e9;
+  --hover: #ececef;
+  --border: rgba(0, 0, 0, 0.09);
+  --divider: rgba(0, 0, 0, 0.05);
+  --t1: #16161a;
+  --t2: #61616a;
+  --t3: #9a9aa2;
+  --green: #00b86b;
+  --green-dim: rgba(0, 184, 107, 0.12);
+  --danger: #e5484d;
+  --coral: #f4562f;
+  --accent: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-dim: rgba(99, 102, 241, 0.12);
+  --accent-glow: rgba(99, 102, 241, 0.28);
+  --on-accent: #ffffff;
+  --chat-bg: #ffffff;
+}
+
+.cipher {
+  background: var(--bg);
+  color: var(--t1);
+  font-family: 'Instrument Sans', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+.cipher *,
+.cipher *::before,
+.cipher *::after {
+  box-sizing: border-box;
+}
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Hide scrollbars (matches the reference). */
+.cipher ::-webkit-scrollbar {
+  display: none;
+}
+.cipher * {
+  scrollbar-width: none;
+}
+
+@keyframes cx-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+@keyframes cx-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shared components ─────────────────────────────────────────── */
+
+.cx-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* 32px icon button with subtle hover */
+.cx-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--t2);
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+.cx-icon-btn:hover {
+  background: var(--surface);
+  color: var(--t1);
+}
+.cx-icon-btn.active {
+  background: var(--raised);
+  color: var(--t1);
+}
+.cx-icon-btn.danger:hover {
+  color: var(--danger);
+}
+
+/* Text input */
+.cx-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--t1);
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.cx-input:focus {
+  border-color: rgba(99, 102, 241, 0.5);
+}
+.cx-input::placeholder {
+  color: var(--t3);
+}
+
+/* Primary (green) button */
+.cx-btn {
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  padding: 9px 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--on-accent);
+  transition: box-shadow 0.18s, transform 0.15s, filter 0.15s;
+}
+.cx-btn:hover {
+  box-shadow: 0 4px 16px var(--accent-glow);
+  filter: brightness(1.04);
+}
+.cx-btn:disabled {
+  background: var(--raised);
+  color: var(--t3);
+  cursor: default;
+  filter: none;
+}
+.cx-btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--t2);
+}
+.cx-btn.ghost:hover {
+  background: var(--surface);
+  color: var(--t1);
+  filter: none;
+}
+.cx-btn.danger {
+  background: transparent;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: var(--danger);
+}
+.cx-btn.danger:hover {
+  background: rgba(248, 113, 113, 0.1);
+  filter: none;
+}
+
+/* Section label (uppercase tracked) */
+.cx-section {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--t3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cx-muted { color: var(--t2); }
+.cx-dim { color: var(--t3); }
+.cx-green { color: var(--green); }
+
+/* ── Overrides for auth-origin classes reused by the re-skinned sub-pages.
+   Scoped to `.cipher` so the lamp/glass auth screens (not inside .cipher) keep
+   their own violet styling. ─────────────────────────────────────────────── */
+
+.cipher .login-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--t1);
+  font-size: 13.5px;
+  padding: 9px 12px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s;
+}
+.cipher .login-input:focus {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: none;
+  background: var(--surface);
+}
+.cipher .login-input::placeholder { color: var(--t3); }
+
+.cipher .login-button {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--on-accent);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.15s, filter 0.15s;
+}
+.cipher .login-button:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--accent-glow); filter: brightness(1.03); }
+.cipher .login-button:disabled { background: var(--raised); color: var(--t3); filter: none; }
+.cipher .login-button.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--t2);
+}
+.cipher .login-button.ghost:hover { background: var(--surface); color: var(--t1); }
+.cipher .login-button.danger { background: transparent; border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
+.cipher .login-button.danger:hover { background: rgba(248,113,113,0.1); }
+
+.cipher .eye-button { color: var(--t3); }
+.cipher .eye-button:hover { color: var(--accent); }
+
+.cipher .notice.error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+}
+.cipher .notice.success {
+  background: var(--green-dim);
+  border: 1px solid rgba(0, 217, 126, 0.3);
+  color: var(--green);
+}
+
+.cipher .link, .cipher .auth-footer a { color: var(--accent); }
+.cipher .link:hover, .cipher .auth-footer a:hover { color: var(--accent-2); }
+.cipher .auth-subtitle, .cipher .muted, .cipher .hint { color: var(--t2); }
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(99, 102, 241, 0.2);
+  border-top-color: var(--accent);
+  animation: cx-spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes cx-spin {
+  to { transform: rotate(360deg); }
+}

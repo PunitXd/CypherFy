@@ -1,0 +1,28 @@
+# Build artifacts & tooling caches (regenerated in the image).
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Platform folders not needed for a web build — keep the context small.
+android/
+ios/
+linux/
+macos/
+windows/
+test/
+
+# Editor / VCS / OS cruft.
+.git
+.gitignore
+.idea
+.vscode
+*.iml
+.metadata
+.DS_Store
+
+# Local-only config; real values come from --build-arg.
+.env
+
+Dockerfile
+.dockerignore

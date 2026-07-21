@@ -1,0 +1,121 @@
+/* Additions on top of index.css for the multi-screen React auth flow. */
+
+/* The glass card now hosts variable-height forms (login vs register), so center
+   it vertically and let it scroll if it ever exceeds the viewport. */
+.login-form-container {
+  top: 50%;
+  transform: translate(100px, -50%);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* The routed form fills the card and keeps the original spacing. */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: -8px;
+}
+
+.auth-footer {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+
+.auth-footer a,
+.link {
+  color: #a855f7;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-footer a:hover,
+.link:hover {
+  color: #c084fc;
+}
+
+/* Inline text button (e.g. "Resend code") styled like a link. */
+.linkbtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: #a855f7;
+}
+.linkbtn:disabled {
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+/* Notices */
+.notice {
+  font-size: 13px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+.notice.error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+.notice.success {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+/* Disabled primary button */
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* OTP field */
+.otp-input {
+  text-align: center;
+  letter-spacing: 10px;
+  font-size: 20px;
+  padding-left: 24px;
+}
+
+/* Authed landing card — centered (no lamp offset). */
+.home-card {
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* --- Responsive: on narrow screens fade the lamp to a backdrop and center the
+   card so the two-column desktop composition doesn't overflow. --- */
+@media (max-width: 900px) {
+  .lamp-container {
+    transform: translateX(0) scale(0.85);
+    opacity: 0.18;
+    position: absolute;
+    top: 6%;
+    z-index: 1;
+  }
+  .light-beam,
+  .desk-surface {
+    display: none;
+  }
+  .hint-text {
+    display: none;
+  }
+  .login-form-container {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(340px, 90vw);
+  }
+}

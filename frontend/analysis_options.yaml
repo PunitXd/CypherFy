@@ -1,0 +1,13 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_locals: true
+    avoid_print: false # console logging is useful during development
+
+analyzer:
+  errors:
+    # Keep the analyzer strict but not blocking on missing generated files.
+    invalid_annotation_target: ignore
