@@ -96,26 +96,93 @@
   text-align: center;
 }
 
-/* --- Responsive: on narrow screens fade the lamp to a backdrop and center the
-   card so the two-column desktop composition doesn't overflow. --- */
+/* --- Responsive: below 900px the two-column desktop composition (lamp pushed
+   left, card pushed right) has no room, so the scene stacks vertically instead:
+   hint → lamp → card, all in normal flow. The lamp stays fully opaque because
+   its pull-string is the only way to turn the light on and reveal the form —
+   fading it out hid the primary interaction. --- */
 @media (max-width: 900px) {
-  .lamp-container {
-    transform: translateX(0) scale(0.85);
-    opacity: 0.18;
-    position: absolute;
-    top: 6%;
-    z-index: 1;
+  /* The desktop scene is a fixed-height, non-scrolling viewport. Stacked, the
+     content can exceed short screens (or landscape phones), so allow scroll. */
+  html,
+  body {
+    overflow-y: auto;
   }
+
+  .room {
+    flex-direction: column;
+    justify-content: flex-start;
+    height: auto;
+    /* dvh tracks mobile browser chrome showing/hiding; vh fallback first. */
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 0 16px 40px;
+    overflow-y: auto;
+  }
+
+  /* Sits above the card, in flow. Scaled from the top so the head — where the
+     string is anchored — stays put; the head and base keep their intrinsic
+     widths so the absolutely-positioned string handle stays aligned. */
+  .lamp-container {
+    position: relative;
+    top: auto;
+    opacity: 1;
+    z-index: 10;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+
+  /* The desktop stem is 290px — far too tall once stacked above the card. */
+  .lamp-stem {
+    height: 100px;
+  }
+
+  /* The beam (450px wide) and desk glow (550px) would wash across the card
+     rather than pool below the lamp, so they stay hidden in this layout. */
   .light-beam,
   .desk-surface {
     display: none;
   }
+
+  /* Restored from the old mobile rules (it was hidden) and moved into flow at
+     the top — it's the affordance that explains the pull-string. */
   .hint-text {
-    display: none;
+    display: block;
+    position: static;
+    transform: none;
+    /* The lamp's glow bleeds ~30px above the head, so leave enough room below
+       the hint that the text isn't washed out once the light is on. */
+    margin: 22px 0 34px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-align: center;
   }
-  .login-form-container {
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(340px, 90vw);
+
+  /* Out of absolute positioning and into the column. Overrides both the base
+     rule and .home-card's centering transform. */
+  .login-form-container,
+  .home-card {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(360px, 100%);
+    margin: 32px auto 0;
+    max-height: none;
+  }
+}
+
+/* Small phones — tighten the vertical rhythm so the card clears the fold. */
+@media (max-width: 400px) {
+  .lamp-stem {
+    height: 76px;
+  }
+  .hint-text {
+    margin: 16px 0 28px;
+  }
+  .login-form-container,
+  .home-card {
+    margin-top: 24px;
+    padding: 24px 20px;
   }
 }
