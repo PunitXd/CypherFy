@@ -20,10 +20,7 @@ export default function AuthLayout() {
           download
           className="apk-download"
           style={{
-            position: 'fixed',
-            bottom: 16,
-            left: '50%',
-            transform: 'translateX(-50%)',
+            alignSelf: 'center',
             display: 'inline-flex',
             alignItems: 'center',
             gap: 8,
@@ -35,7 +32,6 @@ export default function AuthLayout() {
             fontSize: 13,
             textDecoration: 'none',
             backdropFilter: 'blur(6px)',
-            zIndex: 50,
           }}
         >
           <span aria-hidden="true">⬇️</span> Download for Android
