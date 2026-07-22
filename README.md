@@ -42,6 +42,45 @@ flutter pub get
 flutter run -d chrome
 ```
 
+The above talks to a local backend — `API_BASE_URL`, `SOCKET_URL` and
+`GOOGLE_WEB_CLIENT_ID` all fall back to `localhost:8000` defaults, which is what
+you want in dev.
+
+## Release build (Android)
+
+Once per clone, copy the template and fill in the real production values:
+
+```bash
+cd frontend
+cp dart_defines.example.json dart_defines.json
+```
+
+Then build:
+
+```bash
+flutter build apk --release --dart-define-from-file=dart_defines.json
+```
+
+**The flag is not optional.** `API_BASE_URL`, `SOCKET_URL` and
+`GOOGLE_WEB_CLIENT_ID` are read via `String.fromEnvironment`, which is `const` —
+the localhost defaults get inlined into the AOT snapshot at build time. A plain
+`flutter build apk --release` therefore emits a perfectly valid, signed APK that
+points every request at the phone itself, with no error or warning at build
+time. It surfaces only after install, as "the backend is down" against a
+healthy server. Omitting the flag is silent; omitting the *file* is a loud
+build error, which is why the values are not baked into the source.
+
+Verify before uploading — this must print the production host, and no
+`localhost` or `your-domain.example`:
+
+```bash
+unzip -p build/app/outputs/flutter-apk/app-release.apk lib/arm64-v8a/libapp.so \
+  | grep -aoE 'https?://[a-zA-Z0-9._:-]+'
+```
+
+`dart_defines.json` is gitignored, alongside `android/key.properties` and
+`backend/.env`.
+
 ## Security invariants
 
 1. No plaintext in MongoDB.

@@ -1,0 +1,5 @@
+{
+  "API_BASE_URL": "https://api.your-domain.example/api/v1",
+  "SOCKET_URL": "https://api.your-domain.example",
+  "GOOGLE_WEB_CLIENT_ID": ""
+}
