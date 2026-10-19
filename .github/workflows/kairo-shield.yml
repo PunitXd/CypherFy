@@ -42,13 +42,16 @@ jobs:
           echo "${GITLEAKS_SHA256}  gl.tgz" | sha256sum -c -
           tar xzf gl.tgz gitleaks
           mkdir -p kairo
-          LOG_OPTS=()
+          # Always scope the scan: with no --log-opts Gitleaks scans every ref
+          # (git log --all), and fetch-depth 0 fetches every remote branch, so a
+          # leak on one branch would fail pushes to all the others.
+          LOG_OPTS="${HEAD_SHA}" # push: full history reachable from this commit
           if [ "$EVENT_NAME" = "pull_request" ]; then
-            LOG_OPTS=("--log-opts=${BASE_SHA}..${HEAD_SHA}") # only the commits this PR adds
+            LOG_OPTS="${BASE_SHA}..${HEAD_SHA}" # PR: only the commits this PR adds
           fi
           # --redact=80 keeps only the first 20% of a match (e.g. "AKIA..."): enough
           # to tell the key type and find it, never enough to use it.
-          ./gitleaks git --redact=80 --config .gitleaks.toml "${LOG_OPTS[@]}" \
+          ./gitleaks git --redact=80 --config .gitleaks.toml --log-opts="${LOG_OPTS}" \
             --report-format json --report-path kairo/secrets.json
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
