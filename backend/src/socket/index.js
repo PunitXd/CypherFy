@@ -19,6 +19,7 @@ import { registerWebrtcHandlers } from './handlers/webrtc.handler.js';
 import { registerNotifHandlers } from './handlers/notif.handler.js';
 import { setSocketUser, removeSocketUser, setDisconnectTime } from '../services/redis.service.js';
 import { ERROR_CODES, SOCKET_EVENTS } from '../constants.js';
+import { kairoSocket } from '../kairo/index.js';
 
 let io = null;
 
@@ -71,6 +72,7 @@ export const initSocket = (httpServer) => {
     }
     return next();
   });
+  kairoSocket(io); // Kairo Shield: after auth (needs socket.data.userId), before connection handlers
 
   // --- Connection lifecycle ---
   io.on('connection', async (socket) => {

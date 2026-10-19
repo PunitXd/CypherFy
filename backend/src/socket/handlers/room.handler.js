@@ -29,6 +29,7 @@ import { getIceConfig } from '../../services/ice.service.js';
 import { generateColor } from '../../utils/aliasGenerator.js';
 import { validatePayload } from '../../middlewares/validate.middleware.js';
 import { socketSchemas } from '../../validators/socket.schemas.js';
+import { denyJoin } from '../../kairo/index.js';
 import {
   SOCKET_EVENTS,
   ERROR_CODES,
@@ -216,6 +217,7 @@ export const registerRoomHandlers = (io, socket) => {
     try {
       const { code: rawCode, alias } = payload;
       const code = rawCode.toUpperCase();
+      if (await denyJoin(socket, code)) return; // Kairo Shield: room_join block
 
       const room = await Room.findOne({ code, type: 'ephemeral' });
       if (!room) {

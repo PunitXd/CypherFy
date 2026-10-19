@@ -19,6 +19,7 @@ import { sendKnockNotification } from '../../services/fcm.service.js';
 import { SOCKET_EVENTS, ERROR_CODES } from '../../constants.js';
 import { validatePayload } from '../../middlewares/validate.middleware.js';
 import { socketSchemas } from '../../validators/socket.schemas.js';
+import { denyJoin } from '../../kairo/index.js';
 
 export const registerKnockHandlers = (io, socket) => {
   // ---- knock ----------------------------------------------------------
@@ -28,6 +29,7 @@ export const registerKnockHandlers = (io, socket) => {
     try {
       const { code: rawCode, alias } = v.data;
       const code = rawCode.toUpperCase();
+      if (await denyJoin(socket, code)) return; // Kairo Shield: room_join block
 
       const room = await Room.findOne({ code, type: 'ephemeral' });
       if (!room) {
