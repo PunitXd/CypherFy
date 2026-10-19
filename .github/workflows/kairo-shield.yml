@@ -46,7 +46,9 @@ jobs:
           if [ "$EVENT_NAME" = "pull_request" ]; then
             LOG_OPTS=("--log-opts=${BASE_SHA}..${HEAD_SHA}") # only the commits this PR adds
           fi
-          ./gitleaks git --redact --config .gitleaks.toml "${LOG_OPTS[@]}" \
+          # --redact=80 keeps only the first 20% of a match (e.g. "AKIA..."): enough
+          # to tell the key type and find it, never enough to use it.
+          ./gitleaks git --redact=80 --config .gitleaks.toml "${LOG_OPTS[@]}" \
             --report-format json --report-path kairo/secrets.json
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
