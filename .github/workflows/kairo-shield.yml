@@ -5,7 +5,8 @@
 # uploaded as artifacts (Gitleaks output is redacted). The workflow needs no
 # repository secrets: it only reads code. A scanner error fails the job
 # (fail closed). Third-party actions are pinned to commit SHAs, and the
-# Gitleaks binary is verified against its published SHA-256.
+# Gitleaks binary is verified against its published SHA-256. Runners are pinned
+# to ubuntu-24.04 so a moving ubuntu-latest image cannot change a run.
 
 name: kairo-shield
 
@@ -23,7 +24,7 @@ concurrency:
 
 jobs:
   secrets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -62,7 +63,7 @@ jobs:
           retention-days: 7
 
   deps:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -92,7 +93,7 @@ jobs:
 
   build:
     needs: [secrets, deps]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
