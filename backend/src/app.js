@@ -16,6 +16,7 @@ import callRoutes from './routes/call.routes.js';
 import { apiLimiter } from './middlewares/rateLimit.middleware.js';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 import { getRedis } from './services/redis.service.js';
+import { kairoMiddleware } from './kairo/index.js';
 
 export const app = express();
 
@@ -41,6 +42,7 @@ app.use(
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use(cookieParser());
+app.use(kairoMiddleware);
 app.use(express.static('public'));
 
 // General rate-limit safety net across the API.
