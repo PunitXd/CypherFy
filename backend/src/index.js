@@ -16,11 +16,13 @@ import { app } from './app.js';
 import connectDB from './db/index.js';
 import { connectRedis } from './services/redis.service.js';
 import { initSocket } from './socket/index.js';
+import * as kairo from './kairo/index.js';
 
 const httpServer = createServer(app);
 
 connectDB()
   .then(() => connectRedis())
+  .then(() => kairo.init())
   .then(() => {
     // Attach Socket.io + Redis adapter before listening.
     initSocket(httpServer);
