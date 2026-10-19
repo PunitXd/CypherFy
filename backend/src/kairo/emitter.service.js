@@ -4,7 +4,7 @@
 // Redis. Fire-and-forget: emit() never throws and never blocks a response.
 
 import { KEYS, STREAM_MAXLEN, toStreamFields } from './schema/index.js';
-import { withTimeout } from './redis.js';
+import { withTimeout } from './redis.service.js';
 
 export const createEmitter = ({ redis, timeoutMs, log }) => ({
   /** @returns {Promise<boolean>} true if the event was written */

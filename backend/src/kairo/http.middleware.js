@@ -14,7 +14,7 @@
 // CypherFy request: it logs and calls next().
 
 import { KEYS } from './schema/index.js';
-import { withTimeout } from './redis.js';
+import { withTimeout } from './redis.service.js';
 
 const AUTH_PREFIX = '/api/v1/auth/';
 const ROOMS_PREFIX = '/api/v1/rooms/';
@@ -35,13 +35,13 @@ const AUTH_ENDPOINTS = {
   'reset-password': 'reset_password',
 };
 
-const normalisePath = (p) => String(p || '/').toLowerCase().replace(/\/+$/, '') || '/';
+const normalizePath = (p) => String(p || '/').toLowerCase().replace(/\/+$/, '') || '/';
 
 /**
  * @returns {{scope: 'auth', route: string|null} | {scope: 'room_join', rawCode: string} | null}
  */
-export const classify = (method, rawPath) => {
-  const path = normalisePath(rawPath);
+export const classifyRequest = (method, rawPath) => {
+  const path = normalizePath(rawPath);
   if (method === 'POST' && path.startsWith(AUTH_PREFIX)) {
     const endpoint = path.slice(AUTH_PREFIX.length);
     if (Object.hasOwn(AUTH_ENDPOINTS, endpoint)) return { scope: 'auth', route: AUTH_ENDPOINTS[endpoint] };
@@ -71,7 +71,7 @@ const clientOf = (req) => {
   return c === 'web' || c === 'flutter' ? c : 'unknown'; // informational only, never an exemption
 };
 
-export const createHttpHooks = ({ redis, emitter, hasher, env, inst, timeoutMs, log, now = Date.now }) => {
+export const createHttpMiddleware = ({ redis, emitter, hasher, env, inst, timeoutMs, log, now = Date.now }) => {
   const enforce = env !== 'production'; // production is shadow-only (ARCH D10)
 
   const baseEvent = (type, src) => ({ ts: now(), type, env, inst, src });
@@ -152,7 +152,7 @@ export const createHttpHooks = ({ redis, emitter, hasher, env, inst, timeoutMs, 
     };
 
     try {
-      const kind = classify(req.method, req.path);
+      const kind = classifyRequest(req.method, req.path);
       if (!kind) return proceed();
 
       // Hash now; keep only hashes past this point.
