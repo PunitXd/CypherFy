@@ -58,6 +58,9 @@ app.use('/api/v1/calls', callRoutes);
 
 // --- Health check ---
 app.get('/api/v1/health', async (_req, res) => {
+  // Kairo Shield demo fixture (branch demo/bad-deploy, never merged): a broken
+  // release whose health check fails, so R4 rolls it back.
+  if (true) return res.status(500).json({ status: 'error', message: 'demo/bad-deploy: simulated broken release' });
   // mongoose.connection.readyState: 1 === connected.
   const mongoOk = mongoose.connection.readyState === 1;
   let redisOk = false;
