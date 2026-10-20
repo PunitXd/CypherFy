@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---- Stage 1: build the React (Vite) bundle ----
-FROM node:22-alpine AS build
+FROM node:22.23.3-alpine3.24 AS build
 
 # Compile-time config — Vite bakes VITE_* into the bundle, so these are build
 # args, not runtime env. Override per environment, e.g.:
@@ -36,7 +36,10 @@ COPY . .
 RUN npm run build
 
 # ---- Stage 2: serve the static bundle with nginx ----
-FROM nginx:1.27-alpine
+# Exact tag on the stable line; apk upgrade patches OS packages that already
+# have fixes (Kairo Shield image scan).
+FROM nginx:1.30.6-alpine3.24
+RUN apk upgrade --no-cache
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
