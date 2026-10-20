@@ -29,7 +29,7 @@ import { getIceConfig } from '../../services/ice.service.js';
 import { generateColor } from '../../utils/aliasGenerator.js';
 import { validatePayload } from '../../middlewares/validate.middleware.js';
 import { socketSchemas } from '../../validators/socket.schemas.js';
-import { denyJoin } from '../../kairo/index.js';
+import { denyJoin, knockRequired } from '../../kairo/index.js';
 import {
   SOCKET_EVENTS,
   ERROR_CODES,
@@ -232,7 +232,9 @@ export const registerRoomHandlers = (io, socket) => {
 
       // Locked rooms require the host OR a socket the host has admitted.
       // Non-admitted, non-host joiners are rejected and must knock first.
-      if (room.isLocked && room.createdBy !== alias) {
+      // Kairo Shield: a room hit by a flagged guesser is put in knock mode (R2b).
+      const kairoKnock = room.createdBy !== alias && (await knockRequired(socket, room));
+      if ((room.isLocked || kairoKnock) && room.createdBy !== alias) {
         const admitted = await isAdmitted(code, socket.id);
         if (!admitted) {
           return socket.emitError(

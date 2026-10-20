@@ -17,12 +17,13 @@ import connectDB from './db/index.js';
 import { connectRedis } from './services/redis.service.js';
 import { initSocket } from './socket/index.js';
 import { initKairo } from './kairo/index.js';
+import { Room } from './models/room.model.js';
 
 const httpServer = createServer(app);
 
 connectDB()
   .then(() => connectRedis())
-  .then(() => initKairo())
+  .then(() => initKairo({ roomExists: (code) => Room.exists({ code: String(code).toUpperCase(), type: 'ephemeral' }).then(Boolean) })) // Kairo Shield: R2b room-exists check
   .then(() => {
     // Attach Socket.io + Redis adapter before listening.
     initSocket(httpServer);
